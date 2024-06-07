@@ -2,6 +2,8 @@ import cv2
 import base64
 import requests
 import datetime
+from openai import OpenAI
+
 
 
 def get_base64_image():
@@ -23,5 +25,21 @@ def interpret_pic():
     print(resp.content)
     return resp['response']
 
+def interpret_image_description_ollama(text):
+    client = OpenAI(
+        base_url='http://localhost:11434/v1',
+        api_key='ollama',  # required, but unused
+    )
+
+    response = client.chat.completions.create(
+        model="llama2",
+        messages=[
+            {"role": "system", "content": "Greet the person that is described in a funny way. The person is described as: " + text}
+        ]
+    )
+    print(response.choices[0].message.content)
+
 if __name__ == '__main__':
     print(interpret_pic())
+
+
